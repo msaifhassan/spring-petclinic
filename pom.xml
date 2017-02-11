@@ -5,7 +5,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>org.springframework.samples</groupId>
   <artifactId>spring-petclinic</artifactId>
-  <version>1.4.3-SNAPSHOT</version>
+  <version>1.4.3</version>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
@@ -33,13 +33,24 @@
     <cobertura.version>2.7</cobertura.version>
 
   </properties>
-  
+
   <repositories>
     <repository>
 	  <id>nexus</id>
 	  <url>http://localhost:8081/repository/maven-public/</url>
 	</repository>
   </repositories>
+
+  <distributionManagement>
+	<snapshotRepository>
+	  <id>nexus-local</id>
+	  <url>http://localhost:8081/repository/maven-snapshots</url>
+	</snapshotRepository>
+	<repository>
+	  <id>nexus-local</id>
+	  <url>http://localhost:8081/repository/maven-releases</url>
+	</repository>
+  </distributionManagement>
 
   <dependencies>
     <!-- Spring and Spring Boot dependencies -->
@@ -124,16 +135,44 @@
       <artifactId>spring-boot-devtools</artifactId>
       <scope>runtime</scope>
     </dependency>
+
+      <!-- Test framework -->
+      <dependency>
+          <groupId>org.spockframework</groupId>
+          <artifactId>spock-core</artifactId>
+          <version>1.1-groovy-2.4-rc-3</version>
+          <scope>test</scope>
+      </dependency>
+      <dependency>
+          <groupId>org.codehaus.groovy</groupId>
+          <artifactId>groovy-all</artifactId>
+          <version>2.4.7</version>
+          <scope>test</scope>
+      </dependency>
+
   </dependencies>
 
   <build>
     <plugins>
+        <plugin>
+            <groupId>org.codehaus.gmavenplus</groupId>
+            <artifactId>gmavenplus-plugin</artifactId>
+            <version>1.5</version>
+            <executions>
+                <execution>
+                    <goals>
+                        <goal>compile</goal>
+                        <goal>testCompile</goal>
+                    </goals>
+                </execution>
+            </executions>
+        </plugin>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
         <executions>
           <execution>
-            <!-- Spring Boot Actuator displays build-related information 
+            <!-- Spring Boot Actuator displays build-related information
               if a META-INF/build-info.properties file is present -->
             <goals>
               <goal>build-info</goal>
@@ -166,7 +205,7 @@
         </executions>
       </plugin>
 
-      <!-- Spring Boot Actuator displays build-related information if a git.properties 
+      <!-- Spring Boot Actuator displays build-related information if a git.properties
         file is present at the classpath -->
       <plugin>
         <groupId>pl.project13.maven</groupId>
@@ -213,6 +252,14 @@
             <version>${webjars-bootstrap.version}</version>
           </dependency>
         </dependencies>
+      </plugin>
+	  <plugin>
+		<groupId>org.apache.maven.plugins</groupId>
+		<artifactId>maven-deploy-plugin</artifactId>
+		<version>2.8.2</version>
+		<configuration>
+		  <skip>false</skip>
+        </configuration>
       </plugin>
     </plugins>
   </build>
